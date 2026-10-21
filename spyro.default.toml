@@ -5,8 +5,8 @@ project_name = "SpyroEnterTheDragonfly"
 # points input_game_dir at your disc (.rvz / .iso / .gcm or an extracted folder).
 input_game_dir = "extracted"
 output_dir = "export"
-runtime_source_dir = "../NWiiRecomp/nWiiRuntime"
-sdk_sigdb = "../NWiiRecomp/third_party/dolphin-sigdb/totaldb.dsy"
+runtime_source_dir = "NWiiRecomp/nWiiRuntime"
+sdk_sigdb = "NWiiRecomp/third_party/dolphin-sigdb/totaldb.dsy"
 
 split_output = true
 instructions_per_file = 20000

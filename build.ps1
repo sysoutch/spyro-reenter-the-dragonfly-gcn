@@ -12,7 +12,7 @@
 param([string]$Disc, [switch]$SkipRecompiler)
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
-$nwii = Join-Path (Split-Path $root) 'NWiiRecomp'
+$nwii = Join-Path $root 'NWiiRecomp'
 # [hle_hooks] natives that tools\gen_natives.py derives from the game's code:
 # the game's 4x4 matrix scale / add / multiply (skinning).
 $Natives = @('gs8e_mtx44_scale', 'gs8e_mtx44_add', 'gs8e_mtx44_concat')

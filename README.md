@@ -1,5 +1,7 @@
 # Spyro: Re-Enter the Dragonfly (GameCube → PC)
 
+![Title screen at 3× internal resolution, 16:9](docs/screenshots/title.jpg)
+
 A native Windows port of **Spyro: Enter the Dragonfly** (GameCube, USA,
 `GS8E7D`), made by statically recompiling the game's PowerPC code into C++
 with [NWiiRecomp](https://github.com/BlackLineInteractive/NWiiRecomp). No
@@ -20,7 +22,22 @@ build reads it to produce the executable on your machine.
   (wider field of view, HUD kept 4:3), fullscreen, VSync, FPS counter.
 - Steady 60 fps; 90 and 120 fps modes (experimental, heavy scenes can dip).
 - Keyboard and controller (XInput/SDL), both rebindable in the menu.
-- Saves to a memory card file next to the game (`gamecube/memcard_A.raw`).
+- Saves to a memory card file next to the game (`memcard_A.raw`).
+
+## Screenshots
+
+All taken at 3× internal resolution, 4× MSAA, 16:9 widescreen.
+
+| | |
+| --- | --- |
+| ![The Dragon Realms hub at sunset](docs/screenshots/hub.jpg) | ![Talking to Bianca in the hub](docs/screenshots/dialog.jpg) |
+| The hub at sunset | Talking to Bianca |
+| ![Zoe in the second level](docs/screenshots/level2.jpg) | ![The town in the second level](docs/screenshots/level2-town.jpg) |
+| Zoe in the second level | The second level's town |
+| ![The attract-mode demo, flying over water](docs/screenshots/demo.jpg) | ![The title menu before the game starts](docs/screenshots/launcher.jpg) |
+| The attract-mode demo | Title menu: pick your disc, settings, controller setup |
+| ![Graphics settings in the pause menu](docs/screenshots/settings.jpg) | ![Rebinding keyboard controls](docs/screenshots/controls.jpg) |
+| Graphics settings (F1) | Keyboard and controller rebinding |
 
 ## Building
 
@@ -32,14 +49,14 @@ libraries (SDL2, Dear ImGui, toml++, zstd) and takes a while.
 
 ```powershell
 git clone --recursive https://github.com/sysoutch/spyro-reenter-the-dragonfly-gcn.git
-cd spyro-reenter-the-dragonfly-gcn\gamecube
+cd spyro-reenter-the-dragonfly-gcn
 .\build.ps1 -Disc "D:\Games\Spyro - Enter the Dragonfly (USA).rvz"
 .\run-spyro.ps1
 ```
 
-`build.ps1` builds the recompiler, translates the game's code into
-`gamecube\export\` and builds `gamecube\export\build\Release\SpyroEnterTheDragonfly.exe`.
-Put the disc in `gamecube\` and you can leave out `-Disc`. Run it again after
+`build.ps1` builds the recompiler, translates the game's code into `export\`
+and builds `export\build\Release\SpyroEnterTheDragonfly.exe`. Put the disc
+next to `build.ps1` and you can leave out `-Disc`. Run it again after
 updating; it only rebuilds what changed.
 
 `.wia`, `.gcz`, `.ciso` and `.wbfs` images have to be converted first, e.g. in
@@ -47,10 +64,10 @@ Dolphin: right-click the game → *Convert File...* → ISO or RVZ.
 
 ## Playing
 
-Double-click `gamecube\Play Spyro.bat` (or run `run-spyro.ps1`): it starts the
-game with the disc in `gamecube\`, or lets you pick one in the title menu.
-Starting `SpyroEnterTheDragonfly.exe` directly works too. Settings are saved to `gamecube\spyro.toml`, created
-from `spyro.default.toml` the first time.
+Double-click `Play Spyro.bat` (or run `run-spyro.ps1`): it starts the game
+with the disc next to it, or lets you pick one in the title menu. Starting
+`SpyroEnterTheDragonfly.exe` directly works too. Settings are saved to
+`spyro.toml`, created from `spyro.default.toml` the first time.
 
 | GameCube | Keyboard | Controller |
 | --- | --- | --- |
@@ -75,14 +92,13 @@ fullscreen. On a fresh memory card the game reports it as corrupted: choose
 ## Layout
 
 ```
-gamecube/            this port: settings, launch/build scripts, notes
-  spyro.default.toml   recompiler settings (function hooks) + default game settings
-  build.ps1            disc -> executable
-  Play Spyro.bat       start the game (double-click; runs run-spyro.ps1)
-  NOTES.md             what was fixed and how, every debug switch
-  tools/               profiling, screenshot and disc tools used during development
-  difftest/            recompiler vs. interpreter instruction tests
+Play Spyro.bat       start the game (double-click; runs run-spyro.ps1)
+build.ps1            disc -> executable
+spyro.default.toml   recompiler settings (function hooks) + default game settings
 NWiiRecomp/          the recompiler and runtime (submodule, fork with this port's changes)
+docs/NOTES.md        what was fixed and how, every debug switch
+tools/               profiling, screenshot, disc and code-generation tools
+difftest/            recompiler vs. interpreter instruction tests
 ```
 
 ## Credits

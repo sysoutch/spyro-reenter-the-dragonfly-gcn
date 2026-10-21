@@ -8,24 +8,24 @@
 *.ciso
 *.dol
 *.elf
-gamecube/extracted/
+/extracted/
 # Texture dumps and saves come from the game too.
 *.rgba
-gamecube/memcard_*.raw
-gamecube/memcard_*.raw.*
+/memcard_*.raw
+/memcard_*.raw.*
 
 # --- Generated from the game's code by the recompiler (build.ps1 recreates it) ---
-gamecube/export/
-gamecube/export_gen/
-gamecube/export_gen.toml
-gamecube/difftest/gen/
+/export/
+/export_gen/
+/export_gen.toml
+/difftest/gen/
 
 # --- Your own settings and caches ---
-gamecube/spyro.toml
-gamecube/spyro.toml.tmp
-gamecube/shader_cache/
+/spyro.toml
+/spyro.toml.tmp
+/shader_cache/
 # Same file as NWiiRecomp/third_party/dolphin-sigdb/totaldb.dsy.
-gamecube/totaldb.dsy
+/totaldb.dsy
 
 # --- Local tooling ---
 taskitty.json

@@ -1,22 +1,24 @@
 # Spyro: Enter the Dragonfly (GameCube, GS8E7D) – NWiiRecomp port
 
-## Layout
-- `Spyro - Enter the Dragonfly (USA).rvz` – original disc image
-- `extracted/` – disc contents (DolphinTool `extract`), `sys/main.dol` is what gets recompiled
-- `spyro.toml` – recompiler config (top-level keys) + runtime config (`[system]`, `[game]`, `[graphics]`)
-- `totaldb.dsy` – Dolphin SDK signature DB, names 418 SDK functions
+## Layout (repository root)
+- `spyro.default.toml` – recompiler config (top-level keys, `[hle_hooks]`) + default runtime config
+  (`[system]`, `[game]`, `[graphics]`, ...); `spyro.toml` is the user's copy (untracked)
+- `build.ps1` – disc -> exe; `run-spyro.ps1` / `Play Spyro.bat` – start the game
+- `NWiiRecomp/` – recompiler + runtime (submodule, fork); SDK signature DB in its
+  `third_party/dolphin-sigdb/totaldb.dsy` (names 418 SDK functions)
 - `font_western.bin`, `font_japanese.bin` – Dolphin's free IPL font replacements (see `font-licenses.txt`)
-- `export/` – generated C++ project (6656 functions); `export/build/Release/SpyroEnterTheDragonfly.exe`
-- `run-spyro.ps1` – launcher
+- `tools/`, `difftest/` – development tools (difftest stays next to `export/`: the generated CMake
+  looks for `../difftest`)
+- Untracked, local: the disc image, `extracted/` (DolphinTool `extract`), `export/` (generated C++
+  project, ~6656 functions; `export/build/Release/SpyroEnterTheDragonfly.exe`), `memcard_A.raw`
 
 ## Rebuild
 ```
-..\NWiiRecomp\build\nWiiRecomp\Release\nwiirecomp.exe spyro.toml   # regenerates export/ (wipes nothing else)
-cmake --build export\build --config Release --parallel                # VS 2022 bundled cmake
+.\build.ps1 [-Disc <path>]   # recompiler, generated code (changed files only), natives, exe
 ```
-Regenerating `export/` copies `nWiiRuntime` from `../NWiiRecomp/nWiiRuntime`, so runtime fixes belong there.
+Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so runtime fixes belong there.
 
-## Runtime fixes made in ../NWiiRecomp/nWiiRuntime
+## Runtime fixes made in NWiiRecomp/nWiiRuntime
 1. `CMakeLists.txt` – `SDL_MAIN_HANDLED` (link failed: SDL renamed `main` on Windows).
 2. `src/hw/hw_exi.cpp` (new) – minimal EXI: channel 0 / device 1 IPL ROM serving the fonts at
    0x1AFF00 / 0x1FCF00. Without it `OSInitFont` fails and the game panics in `bitfont.cpp:1087`.
@@ -58,7 +60,7 @@ Regenerating `export/` copies `nWiiRuntime` from `../NWiiRecomp/nWiiRuntime`, so
 25. `src/hw/hw_exi.cpp` rewritten around EXI devices: IPL (ROM fonts + RTC + **SRAM**, with flash-ID
     checksums 0xFF so CARD mounts verify) and a **memory card** in slot A (Nintendo flash protocol:
     ID, status, read array, page program, sector/chip erase, interrupt enable), 4 Mbit / 59 blocks,
-    backed by `gamecube/memcard_A.raw` with write-through. EXT presence bit on channel 0.
+    backed by `memcard_A.raw` with write-through. EXT presence bit on channel 0.
     `NWII_EXITRACE=1` logs channel-0 card traffic.
 26. **Recompiler carry bugs**: `addic`/`addic.` added the sign-extended immediate as a 64-bit value
     (`+ -1` → inverted CA) and `subfic` never set CA at all. CodeWarrior uses both for `==`/`!=`
@@ -175,7 +177,7 @@ Regenerating `export/` copies `nWiiRuntime` from `../NWiiRecomp/nWiiRuntime`, so
     divw/0 and INT_MIN/-1 -> the dividend's sign (0 or -1); double fmadd/fmsub/fnmadd/fnmsub fused.
     Interpreter gained the carry ops (addc/adde/addze/addme/subfc/subfe/subfze/subfme), stwux,
     mtsr/mfsr.
-49. **Verification tools**: `gamecube/difftest` (gen.py + main.cpp, CMake target nwii_difftest,
+49. **Verification tools**: `difftest/` (gen.py + main.cpp, CMake target nwii_difftest,
     EXCLUDE_FROM_ALL) runs all ~81k distinct straight-line instruction bodies from output_*.cpp
     against interpret_one on random states -- currently 0 real mismatches. Interpreter mode:
     `NWII_CTRL` command `interp on <hexlimit>` runs every recompiled function below the limit through
@@ -395,7 +397,7 @@ Regenerating `export/` copies `nWiiRuntime` from `../NWiiRecomp/nWiiRuntime`, so
     NWII_LAUNCHER_ENTER=<frame>. The exe now takes `[disc] [config]` (a lone *.toml = config).
     Raw disc images: VirtualDisc::init_image (one region = whole file), Executable::load_dol with
     a base offset, bi2 read through VirtualDisc. Memory card and IPL fonts are looked up next to
-    the config first (was: next to the disc), so an ISO elsewhere still uses gamecube/memcard_A.raw.
+    the config first (was: next to the disc), so an ISO elsewhere still uses the repo's memcard_A.raw.
     Verified: a .gcm rebuilt from extracted/ (tools/make_gcm.py) boots to demo mode via Play.
 73. **RVZ discs** (hle/disc_image.cpp, include/runtime/disc_image.h): DiscImage::open gives a
     reader for .iso/.gcm or RVZ (GameCube; zstd or stored chunks), used by VirtualDisc, the DOL
@@ -411,7 +413,7 @@ Regenerating `export/` copies `nWiiRuntime` from `../NWiiRecomp/nWiiRuntime`, so
 74. **Starting without arguments** (main.cpp): with no config argument and no ./config.toml the
     exe looks next to itself and up to 4 folders up for a *.toml with a [game] section (creates
     <name>.toml from <name>.default.toml if only that exists), so double-clicking the exe or
-    dropping a disc on it loads gamecube/spyro.toml. Before, it ran on built-in defaults
+    dropping a disc on it loads the repo's spyro.toml. Before, it ran on built-in defaults
     (game ID "RSZK") and the launcher rejected every disc. `Play Spyro.bat` runs
     run-spyro.ps1 (double-clicking a .ps1 opens Notepad). run-spyro.ps1 builds its argument list
     with += -- `$x = if (...) { @($disc) }` unrolls to a string, and splatting a string passes

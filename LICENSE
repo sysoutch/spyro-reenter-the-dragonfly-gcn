@@ -6,8 +6,8 @@ use only.
 Portions (configuration, scripts, notes, tools) Copyright (c) 2026 sysoutch.
 
 Third-party parts keep their own licenses:
-- gamecube/font_western.bin, gamecube/font_japanese.bin: generated from Droid
-  Sans (Apache License 2.0), see gamecube/font-licenses.txt.
+- font_western.bin, font_japanese.bin: generated from Droid
+  Sans (Apache License 2.0), see font-licenses.txt.
 - NWiiRecomp/third_party/dolphin-sigdb/totaldb.dsy: from Dolphin, see the
   COPYING file next to it.
 
