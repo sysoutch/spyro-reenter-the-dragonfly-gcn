@@ -1,0 +1,112 @@
+# Default settings. build.ps1 / run-spyro.ps1 copy this to spyro.toml on first use;
+# the in-game settings menu (F1) and the launcher save into that copy.
+project_name = "SpyroEnterTheDragonfly"
+# Paths are relative to this folder (run the recompiler from here). build.ps1
+# points input_game_dir at your disc (.rvz / .iso / .gcm or an extracted folder).
+input_game_dir = "extracted"
+output_dir = "export"
+runtime_source_dir = "../NWiiRecomp/nWiiRuntime"
+sdk_sigdb = "../NWiiRecomp/third_party/dolphin-sigdb/totaldb.dsy"
+
+split_output = true
+instructions_per_file = 20000
+# The runtime runs on the wall-clock timebase ([hle] wall_timebase), so the
+# per-instruction counter is only statistics; dropping it speeds up the CPU.
+count_instructions = false
+# Entry switches list only real re-entry points (returns, loop polls, jump
+# tables, external branch targets): the optimiser can keep guest values in
+# host registers across instructions.
+lean_entry_switch = true
+
+# PADRead (not recognised by the SDK signature DB): bind the native one so
+# keyboard/controller input reaches the game instead of the unemulated SI.
+[hle_hooks]
+"801D9D88" = "PADRead"
+# GXDrawDone without the CPU waiting for the host renderer (GPU runs in
+# parallel, as on hardware): ~25 -> 30+ fps in the hub.
+"801EC090" = "GXDrawDone"
+# MSL memcpy / __fill_mem (memset) natively: the byte-at-a-time guest loops
+# were the top of the CPU profile.
+"8000551C" = "nwii_memcpy"
+"80005464" = "nwii_fill_mem"
+# The game's 4x4 matrix scale / add / multiply (skinning, thousands of calls
+# per frame) natively, bit-identical. build.ps1 generates them from your disc
+# (tools/gen_natives.py) and drops these three hooks if Python is missing.
+"801BBC04" = "gs8e_mtx44_scale"
+"801BC138" = "gs8e_mtx44_add"
+"801BBE1C" = "gs8e_mtx44_concat"
+
+# Runtime settings (read by the built executable; defaults to Wii otherwise)
+[system]
+platform = "GameCube"
+
+[game]
+id = "GS8E7D"
+
+[graphics]
+vsync = true
+window_width = 1920
+window_height = 1080
+# 16:9: wider 3D field of view (no stretching), HUD kept 4:3. false = original 4:3.
+widescreen = true
+# Render at 3x the GameCube's 640x480 (1920x1440), 4x MSAA, 16x anisotropic
+# texture filtering. Lower internal_scale/msaa if a GPU struggles.
+internal_scale = 3
+msaa = 4
+anisotropy = 16
+fullscreen = false
+show_fps = false
+# 60 (original pacing), 90 or 120 (experimental).
+frame_rate = 60
+
+[hle]
+# Real-time timebase: game speed and VI follow the wall clock (needs the
+# emulation to keep up, which it does here).
+wall_timebase = true
+# __OSReschedule (from the SDK signature DB) so the VI wake-up preempts.
+resched = 0x801D1D48
+
+[audio]
+volume = 100
+mute = false
+
+[keyboard]
+a = "Space"
+b = "F"
+x = "Left Shift"
+y = "R"
+z = "Tab"
+l = "Q"
+r = "E"
+start = "Return"
+dpad_up = "Keypad 8"
+dpad_down = "Keypad 2"
+dpad_left = "Keypad 4"
+dpad_right = "Keypad 6"
+stick_up = "W"
+stick_down = "S"
+stick_left = "A"
+stick_right = "D"
+c_up = "Up"
+c_down = "Down"
+c_left = "Left"
+c_right = "Right"
+
+[controller]
+a = "a"
+b = "b"
+x = "x"
+y = "y"
+z = "righttrigger"
+l = "leftshoulder"
+r = "rightshoulder"
+start = "start"
+dpad_up = "dpup"
+dpad_down = "dpdown"
+dpad_left = "dpleft"
+dpad_right = "dpright"
+
+[launcher]
+# Title menu before the game boots (Play, Open Spyro ISO, Recent ISOs, ...).
+enabled = true
+recent = []

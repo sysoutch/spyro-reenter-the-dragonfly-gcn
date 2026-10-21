@@ -1,0 +1,4 @@
+[submodule "NWiiRecomp"]
+	path = NWiiRecomp
+	url = https://github.com/sysoutch/NWiiRecomp.git
+	branch = spyro-gcn
