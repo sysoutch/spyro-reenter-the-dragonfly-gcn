@@ -56,7 +56,7 @@ $recomp = Join-Path $nwii 'build\nWiiRecomp\Release\nwiirecomp.exe'
 if (-not $SkipRecompiler -or -not (Test-Path $recomp)) {
     Write-Host '== Building the recompiler'
     if (-not (Test-Path (Join-Path $nwii 'build\CMakeCache.txt'))) {
-        & $cmake -S $nwii -B (Join-Path $nwii 'build') -G 'Visual Studio 17 2022' -A x64; Invoke-Checked 'CMake configure (NWiiRecomp)'
+        & $cmake -S $nwii -B (Join-Path $nwii 'build') -G 'Visual Studio 17 2022' -A x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5; Invoke-Checked 'CMake configure (NWiiRecomp)'
     }
     & $cmake --build (Join-Path $nwii 'build') --config Release --target nwiirecomp --parallel; Invoke-Checked 'Recompiler build'
 }
@@ -113,7 +113,7 @@ Write-Host "$changed generated files changed"
 Write-Host '== Building the game'
 $build = Join-Path $export 'build'
 if (-not (Test-Path (Join-Path $build 'CMakeCache.txt'))) {
-    & $cmake -S $export -B $build -G 'Visual Studio 17 2022' -A x64; Invoke-Checked 'CMake configure (game)'
+    & $cmake -S $export -B $build -G 'Visual Studio 17 2022' -A x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5; Invoke-Checked 'CMake configure (game)'
 }
 & $cmake --build $build --config Release --target SpyroEnterTheDragonfly --parallel; Invoke-Checked 'Game build'
 Write-Host "Done: $(Join-Path $build 'Release\SpyroEnterTheDragonfly.exe') -- start it with .\run-spyro.ps1"
