@@ -20,6 +20,11 @@ lean_entry_switch = true
 
 # PADRead (not recognised by the SDK signature DB): bind the native one so
 # keyboard/controller input reaches the game instead of the unemulated SI.
+[hle_post_hooks]
+# Camera setup: widen the object-culling frustum to match the widescreen
+# option, so nothing is missing at the 16:9 side edges (natives\gs8e_widescreen.cpp).
+"80039114" = "gs8e_widen_cull"
+
 [hle_hooks]
 "801D9D88" = "PADRead"
 # GXDrawDone without the CPU waiting for the host renderer (GPU runs in

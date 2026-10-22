@@ -418,6 +418,54 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     run-spyro.ps1 (double-clicking a .ps1 opens Notepad). run-spyro.ps1 builds its argument list
     with += -- `$x = if (...) { @($disc) }` unrolls to a string, and splatting a string passes
     it character by character (the config came out as ":").
+75. **Level 2 waterfall "dark wedge" is in the original** (checked in Dolphin 2609a at the same
+    spot). It is the river's flow overlay at the waterfall lip: 4-vertex strips (no normals,
+    scrolling UVs, cull off) drawn at 46% (TEV: C0 + TEXC*RASC, alpha A0) with a near-black 64x64
+    sphere map (normal -> view matrix -> post [0.5 scale, 0.5 offset, normalised]); the lip row
+    hangs out in front of the cliff, so from below it shows as a dark sheet. Found with the new
+    `NWII_CTRL` commands `probe <x> <y>` (the draw log's third pixel sample = that native screen
+    pixel, so the draw that paints it can be read off) and `skipcmode <hex>|off` (live
+    NWII_SKIP_CMODE); the draw log now also prints each texgen's post matrix.
+76. **Voice stutter / crackle (Zoe etc., worse at 120 fps)** (main.cpp audio feeder): the game's
+    audio DMA delivers exactly 32000 frames/s, but the feeder queued each 5 ms block as it came,
+    so the host queue held almost no cushion (min 0 ms, ran dry 6-7x per second at 120 fps) and
+    SDL's 32 ms pulls were padded with silence. Now playback starts, and restarts after running
+    dry, only once 80 ms are waiting; target 120 ms. Measured: dry 0x, min 60 ms. A scheduler
+    catch-up for missed audio DMA periods was tried and made no difference (production was
+    already real time). `NWII_AUDIOSTAT=1` prints produced frames / min queue / dry count per second.
+    Later: the cushion grows 1.5x (to 250 ms) each time the queue runs dry (stalls at a level's
+    start), and a 0.2% stretch/shrink (linear interpolation per chunk) corrects the drift between
+    the game's wall-clock 32 kHz and the device clock, which drained ~35 ms per 80 s.
+77. **Charge shake at 120 fps (task 40)** (ios.cpp steady pacing): measured from the view matrix
+    per frame, the camera moves each frame by the PREVIOUS frame's duration (game timers on
+    OSGetTime, func_80089BFC), so frame-length swings show as uneven steps -- at charge speed
+    (~1000 units/s) a 3 ms swing is a 3-unit wobble, vertical too. Pacing now holds frames at
+    the 31st-fastest of the last 32 (`NWII_VI_STEADY=<rank>`, 0 off; was the 80th percentile), and
+    the free-running retraces follow the paced period: an 8.3 ms retrace had released the game
+    early. Level 2 frame starts: 8-18 ms -> 12-14 ms (+~10% at 15-16), ~75-80 fps.
+    `NWII_FRAMEHIST=1` adds `[STARTHIST]` (frame start intervals + chosen period).
+    The intermittent camera jump when jumping during a charge is not explained yet: one capture
+    had steady 8.3 ms frames around it (no hitch), so likely game logic -- compare in Dolphin.
+78. **Atlas / pause-menu / card-screen text flicker** (gx_command.h VertexData): the menu text is
+    2D glyph quads with XY-only positions; the decoder fills 2 components and `pos[2]` was
+    uninitialised -- usually a stale -100 that happened to work, about every 2 s NaN or 1e38,
+    and a run of glyphs vanished for one frame ("Monkey Mon", "Button t", or all of it). GX
+    gives z = 0; VertexData is now zero-initialised. Measured on the atlas level list: ~10 bad
+    frames/min -> 0. Ruled out on the way (XFB copies, presentation, vsync/tearing, parser RAM
+    races with NWII_DRAWDONE_LAG=0, NWII_NODLCACHE, NWII_VBO_RING=0, indexed-array snapshots).
+    Also: the presenter's 4:3/16:9 choice for the game's anamorphic mode is now a per-frame vote
+    by draw count with 10-frame hysteresis (was: whichever projection was loaded last), and
+    GX_DL_Snapshot evicts old copies instead of clearing all at 1024 (it would drop lists not
+    yet parsed; only matters with a GXCallDisplayList hook).
+79. **Widescreen culling** (recompiler `[hle_post_hooks]`, natives/gs8e_widescreen.cpp): new
+    hook kind -- the function runs as recompiled (`<name>_body`), then `native(ctx, args)` with
+    r3..r10 from entry. The camera setup func_80039114(this, fovX, fovY, near, far) stores the
+    cull frustum at this+0xF58..0xF6C (-/+tan(fovX/2) at F58/F60, Y at F5C/F64, near/far), which
+    func_8007971C & co. copy into the cull test 0x80083194; `gs8e_widen_cull` scales F58/F60 by
+    4/3 when [graphics] widescreen is on (not in the game's own anamorphic mode, aspect at +188
+    >= 1.5). The projection setter is GXSetProjectionv at 0x801EF620 (not in the sig DB).
+    The black wedge at the top right of the 16:9 title screen is NOT culling: the sky backdrop
+    mesh ends just outside the 4:3 view (unchanged with both frustum copies widened).
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),

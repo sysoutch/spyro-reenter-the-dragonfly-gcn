@@ -94,6 +94,9 @@ if ($python) {
     & $python[0] @pyArgs (Join-Path $root 'tools\gen_natives.py') $gen (Join-Path $gen 'natives\game_natives.cpp') @Natives
     Invoke-Checked 'Generating natives'
 }
+# The port's own natives (natives\*.cpp, not game code) go next to them.
+New-Item -ItemType Directory -Force (Join-Path $gen 'natives') | Out-Null
+Copy-Item (Join-Path $root 'natives\*.cpp') (Join-Path $gen 'natives') -Force
 
 # Copy only what changed into export\ (unchanged files keep their timestamps).
 $export = Join-Path $root 'export'

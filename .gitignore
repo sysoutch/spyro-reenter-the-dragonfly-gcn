@@ -13,6 +13,7 @@
 *.rgba
 /memcard_*.raw
 /memcard_*.raw.*
+*.gci
 
 # --- Generated from the game's code by the recompiler (build.ps1 recreates it) ---
 /export/

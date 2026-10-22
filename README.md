@@ -32,8 +32,8 @@ All taken at 3× internal resolution, 4× MSAA, 16:9 widescreen.
 | --- | --- |
 | ![The Dragon Realms hub at sunset](docs/screenshots/hub.jpg) | ![Talking to Bianca in the hub](docs/screenshots/dialog.jpg) |
 | The hub at sunset | Talking to Bianca |
-| ![Zoe in the second level](docs/screenshots/level2.jpg) | ![The town in the second level](docs/screenshots/level2-town.jpg) |
-| Zoe in the second level | The second level's town |
+| ![Zoe in Dragonfly Dojo](docs/screenshots/level2.jpg) | ![The town in Dragonfly Dojo](docs/screenshots/level2-town.jpg) |
+| Zoe in Dragonfly Dojo | Dragonfly Dojo's town |
 | ![The attract-mode demo, flying over water](docs/screenshots/demo.jpg) | ![The title menu before the game starts](docs/screenshots/launcher.jpg) |
 | The attract-mode demo | Title menu: pick your disc, settings, controller setup |
 | ![Graphics settings in the pause menu](docs/screenshots/settings.jpg) | ![Rebinding keyboard controls](docs/screenshots/controls.jpg) |
@@ -85,8 +85,12 @@ fullscreen. On a fresh memory card the game reports it as corrupted: choose
 ## Known issues
 
 - No reverb on game audio (aux effects are not emulated).
-- An NPC in the second level once stopped responding; it could not be
-  reproduced since.
+- An NPC in Dragonfly Dojo, Rusty the baby dragon, once stopped
+  responding; it could not be reproduced since. Getting stuck at an NPC
+  is a known bug of the original release
+  ([video](https://youtu.be/fCXtjr0SrX0?t=305)).
+
+  ![Rusty in Dragonfly Dojo, asking Spyro about his kite](docs/screenshots/rusty.jpg)
 - At 120 fps the busiest scenes are limited by rendering.
 
 ## Layout
