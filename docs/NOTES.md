@@ -466,6 +466,18 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     >= 1.5). The projection setter is GXSetProjectionv at 0x801EF620 (not in the sig DB).
     The black wedge at the top right of the 16:9 title screen is NOT culling: the sky backdrop
     mesh ends just outside the 4:3 view (unchanged with both frustum copies widened).
+80. **Lower-end machines: no GPU readbacks on the render path** (renderer_gl.cpp, main.cpp):
+    - EFB copies that need converting (half-scale box filter, 4-bit, intensity, shadow border
+      reset -- Spyro's 64x64 R4 shadow, every frame) were read back with glReadPixels, which
+      waits for the GPU to finish everything queued: render thread and GPU took turns instead of
+      overlapping. `EfbConvertGpu` does the same integer arithmetic in up to three small shader
+      passes (box filter, border background = majority/plurality vote, final). Bit-exact:
+      `NWII_EFBCONV_CHECK=1` converts both ways and logs differing texels (0 of 900 copies at
+      3x widescreen and at 1x). `NWII_EFBCONV_CPU=1` = old path (also used with NWII_SHADOWSTAT).
+    - EFB-copy mip chains are built only when a draw samples the copy mipmapped
+      (`s_efb_mips_stale`), not after every copy.
+    - The 5 s `[STAT]` line's efb_nonblack (a full-EFB glReadPixels, ~15 MB at 3x widescreen,
+      a hitch every 5 s) is only measured with `NWII_VERBOSE=1`.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),
