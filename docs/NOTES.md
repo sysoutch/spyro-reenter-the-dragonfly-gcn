@@ -478,6 +478,17 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
       (`s_efb_mips_stale`), not after every copy.
     - The 5 s `[STAT]` line's efb_nonblack (a full-EFB glReadPixels, ~15 MB at 3x widescreen,
       a hitch every 5 s) is only measured with `NWII_VERBOSE=1`.
+    (Checked on a second machine/GPU: 0 of 3600 copies differ.)
+81. **Mouse camera** (input/sources/mouse_keyboard_source.cpp `apply_mouse_camera`, called by
+    InputManager after all sources; `[mouse] camera / sensitivity / invert_y`, Controls > Mouse):
+    a click into the game captures the mouse (SDL relative mode); Esc, F1 or focus loss release
+    it. Mouse speed sets stick deflection (the game turns at a stick rate): sensitivity 50 = full
+    deflection at ~600 px/s, ~30 ms smoothing, deflections start at 20 (dead zone), pressed
+    keys/sticks win. Normally mouse x -> C-stick x (C-right turns the view left, hence the sign;
+    C-up/down do not tilt the camera). While Y is held -- the game's look mode, camera behind
+    Spyro's head -- mouse x/y -> main stick, which aims airplane-style (stick up = look down,
+    rate-based), so mouse up looks up. Ruled out first: tilting the projection in the renderer
+    (works, but the game culls for the untilted view). `NWII_CTRL "mouse <dx> <ms> [dy]"`.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),
