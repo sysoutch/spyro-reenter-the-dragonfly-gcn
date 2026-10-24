@@ -491,7 +491,8 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     (works, but the game culls for the untilted view). `NWII_CTRL "mouse <dx> <ms> [dy]"`.
 82. **Mouse buttons as bindings** (key_bindings, Controls > Keyboard): any pad control can be
     bound to Mouse Left/Middle/Right/4/5 (stored as 1000 + SDL button, saved by name, e.g.
-    `b = "Mouse Left"` to breathe fire, Spyro's default). While rebinding, a click binds the
+    `x = "Mouse Left"` to breathe fire -- Spyro's default, with B (charge) on Left Shift;
+    X is the breath, B the charge). While rebinding, a click binds the
     clicked button. "Reset to defaults" re-applies the [keyboard] of <name>.default.toml after
     the generic table, so game defaults stay in the game's config.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
