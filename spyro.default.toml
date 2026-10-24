@@ -76,8 +76,10 @@ volume = 100
 mute = false
 
 [keyboard]
+# Spyro: A jump, B breathe fire, X charge, Y hold to look around. Mouse buttons
+# bind too ("Mouse Left", "Mouse Right", "Mouse Middle", "Mouse 4", "Mouse 5").
 a = "Space"
-b = "F"
+b = "Mouse Left"
 x = "Left Shift"
 y = "R"
 z = "Tab"
