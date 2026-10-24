@@ -107,6 +107,9 @@ foreach ($f in Get-ChildItem $gen -Recurse -File) {
     if (-not (Test-Path $dst) -or (Get-FileHash $f.FullName).Hash -ne (Get-FileHash $dst).Hash) {
         New-Item -ItemType Directory -Force (Split-Path $dst) | Out-Null
         Copy-Item $f.FullName $dst -Force
+        # Copy-Item keeps the source's timestamp; a copy older than the
+        # object built from the file it replaces would not be recompiled.
+        (Get-Item $dst).LastWriteTime = Get-Date
         $changed++
     }
 }
