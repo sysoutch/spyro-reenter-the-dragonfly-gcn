@@ -20,6 +20,11 @@ lean_entry_switch = true
 
 # PADRead (not recognised by the SDK signature DB): bind the native one so
 # keyboard/controller input reaches the game instead of the unemulated SI.
+[hle_pre_hooks]
+# Camera: limit how fast the follow camera may pitch, so it no longer jumps up
+# when a charge is released in the air (natives\gs8e_camera.cpp).
+"800378E4" = "gs8e_smooth_camera"
+
 [hle_post_hooks]
 # Camera setup: widen the object-culling frustum to match the widescreen
 # option, so nothing is missing at the 16:9 side edges (natives\gs8e_widescreen.cpp).

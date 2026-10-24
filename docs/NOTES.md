@@ -495,6 +495,20 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     X is the breath, B the charge). While rebinding, a click binds the
     clicked button. "Reset to defaults" re-applies the [keyboard] of <name>.default.toml after
     the generic table, so game defaults stay in the game's config.
+83. **Camera jump on releasing a charge mid-air (task 40)** (recompiler `[hle_pre_hooks]`,
+    natives/gs8e_camera.cpp): repro = hold charge (B), jump, release charge in the air. Logged
+    from the game's camera object (0x802AA8A0, view matrix at +0x118, row-vector form, written
+    by game code without a watchable store): on release the follow camera's pitch kicks 3-6
+    degrees in one frame (worst seen 24) and eases back over ~5 frames -- game logic, at 60 fps
+    too. func_800378E4(cam, obj) multiplies +0x118 into the per-draw view whenever +0xC84 says
+    it changed; the pre-hook `gs8e_smooth_camera` caps the main camera's pitch change at
+    60 deg/s there (turning the view about its own x axis, position unchanged). Passes through:
+    the shadow pass (looks straight down), another far-away camera that runs every frame
+    (tracked by position, ignored while the main one was seen < 0.5 s ago), look mode (Y held),
+    cuts (> 12 deg or > 300 units in one update). Replaying the logged run: kick avg 6.5 -> 3.2
+    deg, max 24 -> 4.9. A critically damped spring (w = 15) cuts kicks to ~1.2 deg but trails
+    real camera motion more. `NWII_CAMSMOOTH_LOG=1` logs every limited update. New hook kind:
+    `[hle_pre_hooks]` = native(ctx, args) before the recompiled body.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),
