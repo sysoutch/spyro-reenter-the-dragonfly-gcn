@@ -520,6 +520,10 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
 86. **Dialog panel in widescreen** (WidescreenWanted): dialogs use a cinematic projection (y/x ~1.95)
     that the anamorphic check leaves uncompressed; the panel is flat 3D UI under it (z = -220), so
     flat draws nearer than 300 count as UI and are compressed with the 2D text.
+87. **Aspect ratio** (`[graphics] aspect_ratio = "16:9"`, Graphics tab: 4:3, 16:10, 16:9, 21:9, 32:9;
+    configs with only `widescreen = true/false` still load): efb::wide = ratio / (4/3) sets the EFB
+    width, the x compression of 3D and HUD (1/wide), presentation and the cull widening. Scenes
+    under the game's own wide projections (dialogs) get (4/3)/wide: they are 16:9 wide already.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),

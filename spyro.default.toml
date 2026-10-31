@@ -61,8 +61,8 @@ id = "GS8E7D"
 vsync = true
 window_width = 1920
 window_height = 1080
-# 16:9: wider 3D field of view (no stretching), HUD kept 4:3. false = original 4:3.
-widescreen = true
+# 4:3 = original; wider = wider 3D field of view (no stretching), HUD kept 4:3.
+aspect_ratio = "16:9"
 # Render at 3x the GameCube's 640x480 (1920x1440), 4x MSAA, 16x anisotropic
 # texture filtering. Lower internal_scale/msaa if a GPU struggles.
 internal_scale = 3

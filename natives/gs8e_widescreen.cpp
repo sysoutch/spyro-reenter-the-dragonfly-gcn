@@ -7,7 +7,7 @@
 // widens the projection to 16:9 at render time, but the game still culled
 // against its 4:3 frustum: objects only in the extra width were not drawn
 // (popping in at the side edges). With widescreen on, the horizontal extent is widened
-// by the same 4/3. The game's own anamorphic 16:9 mode (aspect at +188
+// by the same factor. The game's own anamorphic 16:9 mode (aspect at +188
 // already ~1.7) passes a wide fovX itself and is left alone.
 //
 // This file is part of the port, not derived from the game's code; build.ps1
@@ -40,5 +40,5 @@ extern "C" void gs8e_widen_cull(CPUContext &ctx, const unsigned int *args) {
   const float aspect = ReadF(ctx, cam + 188);
   if (!(aspect > 0.0f && aspect < 1.5f)) return;
   for (uint32_t off : {0xF58u, 0xF60u})
-    WriteF(ctx, cam + off, ReadF(ctx, cam + off) * (4.0f / 3.0f));
+    WriteF(ctx, cam + off, ReadF(ctx, cam + off) * nwii::runtime::efb::wide);
 }
