@@ -15,16 +15,15 @@ build reads it to produce the executable on your machine.
 ## Features
 
 - Boots straight from your disc: `.rvz`, `.iso` / `.gcm` or an extracted folder.
-- Title menu before the game (Play, Open Spyro ISO, Recent ISOs, Memory Card
-  & BIOS, Settings, Controller Setup) and a themed pause/settings menu (F1 or the controller's
+- Title menu before the game (Play, Open Spyro ISO, Recent ISOs, Memory Card,
+  Settings, Controller Setup) and a themed pause/settings menu (F1 or the controller's
   Back/View button).
 - Internal resolution up to 8×, MSAA, anisotropic filtering, aspect ratios up to 32:9
   (wider field of view, HUD kept 4:3), fullscreen, VSync, FPS counter.
 - Steady 60 fps; 90 and 120 fps modes (experimental, heavy scenes can dip).
 - Keyboard and controller (XInput/SDL), both rebindable in the menu.
 - Saves to a memory card file next to the game (`memcard_A.raw`), or one you
-  pick in the title menu. A GameCube BIOS can be picked there too; only its
-  fonts are used.
+  pick in the title menu.
 
 ## Screenshots
 

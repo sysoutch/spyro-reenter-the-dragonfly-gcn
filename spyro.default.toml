@@ -128,7 +128,5 @@ dpad_right = "dpright"
 # Title menu before the game boots (Play, Open Spyro ISO, Recent ISOs, ...).
 enabled = true
 recent = []
-# Chosen in the title menu (Memory Card & BIOS). Empty: memcard_A.raw and the
-# font files next to the game. Of a BIOS only the fonts are used.
+# Chosen in the title menu (Memory Card). Empty: memcard_A.raw next to the game.
 memcard = ""
-bios = ""

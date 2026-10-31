@@ -531,11 +531,10 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     either way; 640x448 at 16:9 is ~1.9:1, which the game's value fits. Culling widens by the
     same amount. Camera-facing 4-vertex quads with u slightly outside 0..1 (logo and copyright
     screens, -0.24..1.24 on a repeating texture) get a clamped s in widescreen (WantClampS).
-88. **Memory card and BIOS** (title menu, Memory Card & BIOS; `[launcher] memcard`, `bios`): the card
-    must be 512 KiB, MemoryCardDevice has no other size, and an unusable one is never opened (writes
-    would damage a bigger card): the default card is used instead. The game is HLE, so a BIOS is not
-    run: its ROM (2 MiB, Yay0 fonts at 0x1AFF00 and 0x1FCF00) only replaces the font files.
-    `NWII_MEMCARD` still wins over `memcard`.
+88. **Memory card** (title menu, Memory Card; `[launcher] memcard`): must be 512 KiB, MemoryCardDevice
+    has no other size, and an unusable one is never opened (writes would damage a bigger card): the
+    default card is used instead. `NWII_MEMCARD` still wins over `memcard`. No BIOS option: the game
+    is HLE and never runs BIOS code, and of the ROM it only reads the fonts, which the repo has.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),
