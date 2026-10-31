@@ -15,7 +15,8 @@ $root = $PSScriptRoot
 $nwii = Join-Path $root 'NWiiRecomp'
 # [hle_hooks] natives that tools\gen_natives.py derives from the game's code:
 # the game's 4x4 matrix scale / add / multiply (skinning).
-$Natives = @('gs8e_mtx44_scale', 'gs8e_mtx44_add', 'gs8e_mtx44_concat')
+$Natives = @('gs8e_mtx44_scale', 'gs8e_mtx44_add', 'gs8e_mtx44_concat',
+             'gs8e_xform_dir', 'gs8e_xform_point', 'gs8e_xform_vec4')
 
 function Find-CMake {
     $c = Get-Command cmake -ErrorAction SilentlyContinue

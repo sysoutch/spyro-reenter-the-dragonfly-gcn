@@ -509,6 +509,17 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     deg, max 24 -> 4.9. A critically damped spring (w = 15) cuts kicks to ~1.2 deg but trails
     real camera motion more. `NWII_CAMSMOOTH_LOG=1` logs every limited update. New hook kind:
     `[hle_pre_hooks]` = native(ctx, args) before the recompiled body.
+84. **Persistent mapped vertex/index rings** (renderer_gl.cpp, GL 4.4 looked up at runtime, 8 fenced
+    segments; `NWII_PERSISTENT_VBO=0` off): render 9.25 -> 9.01 ms/frame, the map/unmap pairs were
+    not the expensive part. Copy-Item keeps timestamps, so build.ps1 now stamps copied files.
+85. **Transform natives** (`gs8e_xform_dir/point/vec4`, 0x801BC3B4/801BCBB8/801BCC34): the matrix *
+    vector leaf functions skinning calls per vertex, generated like the 4x4 helpers. Profile before:
+    ~20% of the game thread idle in SelectThread + ntdll (waiting), real work flat, skinning body
+    5.6%, these three ~6%. Dojo spawn, 120 setting, 16:9: ~97 fps with NWII_VI_STEADY=30 (default),
+    ~101 at 25 with more uneven frames, ~85 at 0 (31% of frames take two retraces, 15+ ms).
+86. **Dialog panel in widescreen** (WidescreenWanted): dialogs use a cinematic projection (y/x ~1.95)
+    that the anamorphic check leaves uncompressed; the panel is flat 3D UI under it (z = -220), so
+    flat draws nearer than 300 count as UI and are compressed with the 2D text.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),

@@ -45,6 +45,10 @@ lean_entry_switch = true
 "801BBC04" = "gs8e_mtx44_scale"
 "801BC138" = "gs8e_mtx44_add"
 "801BBE1C" = "gs8e_mtx44_concat"
+# The matrix * vector transforms (direction, point, 4 components), same way.
+"801BC3B4" = "gs8e_xform_dir"
+"801BCBB8" = "gs8e_xform_point"
+"801BCC34" = "gs8e_xform_vec4"
 
 # Runtime settings (read by the built executable; defaults to Wii otherwise)
 [system]
