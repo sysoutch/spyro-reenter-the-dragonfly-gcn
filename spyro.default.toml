@@ -61,8 +61,9 @@ id = "GS8E7D"
 vsync = true
 window_width = 1920
 window_height = 1080
-# 4:3 = original; wider = wider 3D field of view (no stretching), HUD kept 4:3.
-aspect_ratio = "16:9"
+# "game": the game's own Widescreen option decides (4:3 or 16:9). "16:10", "21:9",
+# "32:9": wider 3D field of view (no stretching), HUD kept 4:3.
+aspect_ratio = "game"
 # Render at 3x the GameCube's 640x480 (1920x1440), 4x MSAA, 16x anisotropic
 # texture filtering. Lower internal_scale/msaa if a GPU struggles.
 internal_scale = 3
@@ -127,3 +128,7 @@ dpad_right = "dpright"
 # Title menu before the game boots (Play, Open Spyro ISO, Recent ISOs, ...).
 enabled = true
 recent = []
+# Chosen in the title menu (Memory Card & BIOS). Empty: memcard_A.raw and the
+# font files next to the game. Of a BIOS only the fonts are used.
+memcard = ""
+bios = ""

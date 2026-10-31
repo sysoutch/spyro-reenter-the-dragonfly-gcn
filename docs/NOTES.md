@@ -517,13 +517,25 @@ Regenerating `export/` copies `nWiiRuntime` from `NWiiRecomp/nWiiRuntime`, so ru
     ~20% of the game thread idle in SelectThread + ntdll (waiting), real work flat, skinning body
     5.6%, these three ~6%. Dojo spawn, 120 setting, 16:9: ~97 fps with NWII_VI_STEADY=30 (default),
     ~101 at 25 with more uneven frames, ~85 at 0 (31% of frames take two retraces, 15+ ms).
-86. **Dialog panel in widescreen** (WidescreenWanted): dialogs use a cinematic projection (y/x ~1.95)
-    that the anamorphic check leaves uncompressed; the panel is flat 3D UI under it (z = -220), so
-    flat draws nearer than 300 count as UI and are compressed with the 2D text.
-87. **Aspect ratio** (`[graphics] aspect_ratio = "16:9"`, Graphics tab: 4:3, 16:10, 16:9, 21:9, 32:9;
-    configs with only `widescreen = true/false` still load): efb::wide = ratio / (4/3) sets the EFB
+86. **Panels in widescreen** (WidescreenWanted): menu and dialog panels are flat 3D UI (z = -220)
+    under the perspective projection, so flat draws nearer than 300 count as UI and are compressed
+    with the 2D text. (First seen with the game's own Widescreen option on: every draw then has
+    y/x ~1.95, p0 0.947 instead of 1.428, and the anamorphic check skipped the panel.)
+87. **Aspect ratio** (`[graphics] aspect_ratio`, Graphics tab: Game Aspect Ratio = "game", the
+    default, where the game's own Widescreen option decides 4:3 or 16:9; or 16:10, 21:9, 32:9.
+    "4:3", "16:9" and the old `widescreen` key mean "game"): efb::wide = ratio / (4/3) sets the EFB
     width, the x compression of 3D and HUD (1/wide), presentation and the cull widening. Scenes
     under the game's own wide projections (dialogs) get (4/3)/wide: they are 16:9 wide already.
+    With the game's option on, the scene gets (4/3)/wide (already 16:9 wide). With it off, 3D gets
+    efb::kSceneWiden/wide (0.8844 = the game's 0.6633 vs a flat 3/4), so the picture is the same
+    either way; 640x448 at 16:9 is ~1.9:1, which the game's value fits. Culling widens by the
+    same amount. Camera-facing 4-vertex quads with u slightly outside 0..1 (logo and copyright
+    screens, -0.24..1.24 on a repeating texture) get a clamped s in widescreen (WantClampS).
+88. **Memory card and BIOS** (title menu, Memory Card & BIOS; `[launcher] memcard`, `bios`): the card
+    must be 512 KiB, MemoryCardDevice has no other size, and an unusable one is never opened (writes
+    would damage a bigger card): the default card is used instead. The game is HLE, so a BIOS is not
+    run: its ROM (2 MiB, Yay0 fonts at 0x1AFF00 and 0x1FCF00) only replaces the font files.
+    `NWII_MEMCARD` still wins over `memcard`.
 28. `NWII_INPUT_SCRIPT="sec:BUTTON:ms,..."` (input_manager.cpp): scripted pad 0 input on a timeline,
     independent of window focus. Buttons A B X Y Z L R START, DUP.., UP/DOWN/LEFT/RIGHT (stick), CUP.. (C).
 11. Diagnostics: `NWII_DRAWLOG_FRAME=<n>` (every draw of frame n, EFB readback, texture dumps to cwd),

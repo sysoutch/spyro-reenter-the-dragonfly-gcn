@@ -40,5 +40,5 @@ extern "C" void gs8e_widen_cull(CPUContext &ctx, const unsigned int *args) {
   const float aspect = ReadF(ctx, cam + 188);
   if (!(aspect > 0.0f && aspect < 1.5f)) return;
   for (uint32_t off : {0xF58u, 0xF60u})
-    WriteF(ctx, cam + off, ReadF(ctx, cam + off) * nwii::runtime::efb::wide);
+    WriteF(ctx, cam + off, ReadF(ctx, cam + off) * nwii::runtime::efb::wide / nwii::runtime::efb::kSceneWiden);
 }
